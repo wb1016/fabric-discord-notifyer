@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "fdnotif_common",
+  "name": "fabric discord notifyer",
+  "description": "",
+  "version": "${version}",
+  "environment": "server",
+  "authors": [
+    "wb1016"
+  ],
+  "contributors": [
+	"arthurbambou (aka. Cat Core)",
+    "Thedude7054",
+    "yhr0x43",
+    "BeeFox-sys",
+    "PegasusEpsilon",
+    "v-tron",
+    "MightyKnight",
+    "Ev1dentFir3",
+    "kwvanderlinde",
+    "dkolb",
+    "matthias4217",
+    "Geek202"
+  ],
+  "entrypoints": {
+    "server": [
+      "net.wb1016.fdnotif.fdnotif"
+    ]
+  },
+  "depends": {
+  },
+  "mixins": []
+}

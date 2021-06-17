@@ -1,0 +1,120 @@
+plugins {
+	id 'java-library'
+	id 'fabric-loom' version '0.8-SNAPSHOT'
+}
+repositories {
+	mavenCentral()
+}
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_16
+
+group = "net.wb1016"
+version = project.mod_version
+archivesBaseName = "fdnotif-mc${project.minecraft_version}"
+
+processResources {
+	inputs.property "version", project.version
+
+	filesMatching("fabric.mod.json") {
+		expand "version": project.version
+	}
+}
+
+allprojects {
+
+	def projectName = it.name;
+	apply plugin: 'java-library'
+	apply plugin: 'fabric-loom'
+
+	tasks.withType(JavaCompile).configureEach {
+		it.options.release = 16
+	}
+
+	group = "net.wb1016"
+
+	def versionInfo = getVersionInfo(projectName)
+
+	dependencies {
+		minecraft "com.mojang:minecraft:${project.minecraft_version}"
+		mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+		modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+		modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+	}
+
+	minecraft {}
+
+	configurations {
+		dev
+	}
+
+	repositories {
+		mavenLocal()
+		mavenCentral()
+		maven {
+			name 'm2-dv8tion'
+			url 'https://m2.dv8tion.net/releases'
+		}
+		maven {
+			name = 'Fabric'
+			url = 'https://maven.fabricmc.net/'
+		}
+
+		maven {
+			name = "Jitpack"
+			url = "https://jitpack.io/"
+		}
+	}
+
+	jar {
+		archiveClassifier.set("dev")
+	}
+
+	afterEvaluate {
+		remapJar {
+			input = file("${project.buildDir}/libs/$archivesBaseName-${archiveVersion.get()}-dev.jar")
+			archiveFileName = "${archivesBaseName}-${archiveVersion.get()}.jar"
+		}
+
+		artifacts {
+			dev file: file("${project.buildDir}/libs/$archivesBaseName-${version}-dev.jar"), type: "jar", builtBy: jar
+		}
+
+		processResources {
+			inputs.property "version", project.version
+
+			filesMatching("fabric.mod.json") {
+				expand "version": project.version
+			}
+		}
+	}
+
+	if (project.rootProject != project) {
+		project.rootProject.dependencies {
+			api project(path: ":${project.name}", configuration: "dev")
+			include project(":${project.name}")
+		}
+	}
+
+	task sourcesJar(type: Jar, dependsOn: classes) {
+		classifier = 'sources'
+		from sourceSets.main.allSource
+	}
+
+	tasks.withType(AbstractArchiveTask) {
+		preserveFileTimestamps = false
+		reproducibleFileOrder = true
+	}
+}
+
+subprojects {}
+
+task remapMavenJar(type: RemapJarTask, dependsOn: jar) {
+	afterEvaluate {
+		input = file("${project.buildDir}/libs/${archivesBaseName}-${archiveVersion.get()}-dev.jar")
+		archiveFileName = "${archivesBaseName}-${archiveVersion.get()}-maven.jar"
+		addNestedDependencies.set(false)
+	}
+}
+
+subprojects.each { remapJar.dependsOn("${it.path}:remapJar") }
