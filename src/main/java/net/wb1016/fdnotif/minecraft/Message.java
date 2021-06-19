@@ -50,13 +50,13 @@ public interface Message {
 
     enum MessageObjectType {
         STRING,
-        TEXT;
+        TEXT
     }
 
     enum TextType {
         TRANSLATABLE,
         LITERAL,
         COMMAND,
-        UNKNOWN;
+        UNKNOWN
     }
 }

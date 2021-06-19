@@ -23,11 +23,10 @@
     "Geek202"
   ],
   "entrypoints": {
-    "main": [
+    "server": [
       "net.wb1016.fdnotif.fdnotif"
     ]
   },
-  "depends": {
-  },
+  "depends": {},
   "mixins": []
 }

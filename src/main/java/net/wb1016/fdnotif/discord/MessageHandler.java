@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface MessageHandler {
 
-    static final List<net.wb1016.fdnotif.discord.handlers.MessageHandler> TEXT_HANDLERS = new ArrayList<>();
+    List<net.wb1016.fdnotif.discord.handlers.MessageHandler> TEXT_HANDLERS = new ArrayList<>();
 
     MinecraftMessage handleText(Message text);
 

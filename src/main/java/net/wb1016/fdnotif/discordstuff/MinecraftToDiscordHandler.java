@@ -1,16 +1,12 @@
 package net.wb1016.fdnotif.discordstuff;
 
+import net.dv8tion.jda.api.JDA;
 import net.wb1016.fdnotif.cfg.Config;
-import net.wb1016.fdnotif.cfg.MainConfig;
 import net.wb1016.fdnotif.discord.MessageHandler;
 import net.wb1016.fdnotif.discord.MinecraftMessage;
-import net.wb1016.fdnotif.discord.handlers.StringHandler;
+import net.wb1016.fdnotif.discord.handlers.CommandHandler;
 import net.wb1016.fdnotif.discord.handlers.TextHandler;
 import net.wb1016.fdnotif.minecraft.Message;
-import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
 
 public final class MinecraftToDiscordHandler implements MessageHandler {
 

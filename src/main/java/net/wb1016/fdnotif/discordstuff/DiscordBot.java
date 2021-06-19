@@ -53,11 +53,7 @@ public class DiscordBot implements MessageSender {
         }
         this.startTime = System.currentTimeMillis();
 
-        if (config.mainConfig.logChannels.isEmpty()) {
-            this.hasLogChannels = false;
-        } else {
-            this.hasLogChannels = true;
-        }
+        this.hasLogChannels = !config.mainConfig.logChannels.isEmpty();
 
         this.config = config;
         try {
@@ -102,6 +98,11 @@ public class DiscordBot implements MessageSender {
             }
         }
         this.api.shutdownNow();
+    }
+
+    @Override
+    public void sendMessage(net.wb1016.fdnotif.minecraft.Message message) {
+
     }
 
     public void serverTick(MinecraftServer server) {

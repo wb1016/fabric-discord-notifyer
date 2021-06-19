@@ -1,15 +1,16 @@
 package net.wb1016.fdnotif;
 
+import net.fabricmc.api.DedicatedServerModInitializer;
+import net.wb1016.fdnotif.cfg.ConfigHandler;
 import net.wb1016.fdnotif.discord.MessageSender;
-import net.wb1016.fdnotif.config.manager.ConfigHandler;
 import net.wb1016.fdnotif.discordstuff.DiscordBot;
-import net.fabricmc.api.ModInitializer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class fdnotif implements ModInitializer {
+public class fdnotif implements DedicatedServerModInitializer {
 
 	private static DiscordBot messageReceiver;
+	private static MessageSender messageSender;
 	public static Logger LOGGER = LogManager.getLogger("fdnotif");
 	private static boolean loaded = false;
 

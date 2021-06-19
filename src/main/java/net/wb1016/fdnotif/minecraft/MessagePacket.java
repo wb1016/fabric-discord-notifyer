@@ -13,6 +13,6 @@ public interface MessagePacket {
     enum MessageType {
         CHAT,
         SYSTEM,
-        INFO;
-    }
+        INFO
+		}
 }

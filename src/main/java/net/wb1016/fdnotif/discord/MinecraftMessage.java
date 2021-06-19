@@ -32,10 +32,10 @@ public class MinecraftMessage {
         }
     }
 
-    public static enum Type {
+    public enum Type {
         CHAT,
-        LOG;
-    }
+        LOG
+		}
 
     public MessageSendability getCommon() {
         return common;

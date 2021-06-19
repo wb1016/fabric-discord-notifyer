@@ -1,10 +1,10 @@
-package net.wb1016.fdnotif.config.manager;
+package net.wb1016.fdnotif.cfg;
 
 import com.google.gson.*;
+import net.fabricmc.loader.api.FabricLoader;
 import net.wb1016.fdnotif.cfg.Config;
 import net.wb1016.fdnotif.cfg.MainConfig;
 import net.wb1016.fdnotif.cfg.MessageConfig;
-import net.fabricmc.loader.api.FabricLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -218,8 +218,8 @@ public class ConfigHandler {
     }
 
     public static class ConfigHolder {
-        private Config config;
-        private String token;
+        private final Config config;
+        private final String token;
 
         protected ConfigHolder(Config config, String token) {
             this.config = config;
