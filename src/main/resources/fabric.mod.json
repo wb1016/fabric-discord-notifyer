@@ -10,7 +10,6 @@
   ],
   "contributors": [
 	"arthurbambou (aka. Cat Core)",
-    "AlanFoster",
     "Thedude7054",
     "yhr0x43",
     "BeeFox-sys",
@@ -20,11 +19,15 @@
     "Ev1dentFir3",
     "kwvanderlinde",
     "dkolb",
-    "matthias4217"
+    "matthias4217",
+    "Geek202"
   ],
-  "entrypoints": {},
+  "entrypoints": {
+    "main": [
+      "net.wb1016.fdnotif.fdnotif"
+    ]
+  },
   "depends": {
   },
-  "mixins": [
-  ]
+  "mixins": []
 }

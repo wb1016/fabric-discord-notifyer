@@ -1,6 +1,0 @@
-archivesBaseName = "fdnotif-api"
-version = getApiVersion()
-
-dependencies {
-
-}

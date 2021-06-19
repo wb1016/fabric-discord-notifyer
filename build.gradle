@@ -13,6 +13,9 @@ group = "net.wb1016"
 version = project.mod_version
 archivesBaseName = "fdnotif-mc${project.minecraft_version}"
 
+import net.fabricmc.loom.task.RemapJarTask
+import net.fabricmc.loom.task.RemapSourcesJarTask
+
 processResources {
 	inputs.property "version", project.version
 
@@ -21,100 +24,87 @@ processResources {
 	}
 }
 
-allprojects {
+tasks.withType(AbstractArchiveTask) {
+	preserveFileTimestamps = true
+	reproducibleFileOrder = false
+}
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 16
+	options.encoding = "UTF-8"
+}
 
-	def projectName = it.name;
-	apply plugin: 'java-library'
-	apply plugin: 'fabric-loom'
+group = "net.wb1016"
 
-	tasks.withType(JavaCompile).configureEach {
-		it.options.release = 16
+dependencies {
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+	implementation ('net.dv8tion:JDA:4.2.1_266') {
+		exclude module: 'opus-java'
 	}
 
-	group = "net.wb1016"
-
-	def versionInfo = getVersionInfo(projectName)
-
-	dependencies {
-		minecraft "com.mojang:minecraft:${project.minecraft_version}"
-		mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-		modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-		modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+	include ('net.dv8tion:JDA:4.2.1_266') {
+		exclude module: 'opus-java'
 	}
+	include "net.sf.trove4j:trove4j:3.0.3"
+	include 'org.slf4j:slf4j-nop:1.7.25'
+	include 'org.slf4j:slf4j-api:1.7.25'
+	include 'org.apache.commons:commons-collections4:4.1'
+	include 'com.neovisionaries:nv-websocket-client:2.14'
+	include 'com.squareup.okhttp3:okhttp:3.14.9'
+	include 'com.squareup.okio:okio:1.17.2'
+	include 'com.fasterxml.jackson.core:jackson-databind:2.10.1'
+	include 'com.fasterxml.jackson.core:jackson-annotations:2.10.1'
+	include 'com.fasterxml.jackson.core:jackson-core:2.10.1'
+	include "org.json:json:20210307"
+}
 
-	minecraft {}
+minecraft {}
 
-	configurations {
+configurations {
 		dev
+}
+
+repositories {
+	mavenLocal()
+	mavenCentral()
+	maven {
+		name 'm2-dv8tion'
+		url 'https://m2.dv8tion.net/releases'
 	}
-
-	repositories {
-		mavenLocal()
-		mavenCentral()
-		maven {
-			name 'm2-dv8tion'
-			url 'https://m2.dv8tion.net/releases'
-		}
-		maven {
-			name = 'Fabric'
-			url = 'https://maven.fabricmc.net/'
-		}
-
-		maven {
-			name = "Jitpack"
-			url = "https://jitpack.io/"
-		}
+	maven {
+		name = 'Fabric'
+		url = 'https://maven.fabricmc.net/'
 	}
-
-	jar {
-		archiveClassifier.set("dev")
-	}
-
-	afterEvaluate {
-		remapJar {
-			input = file("${project.buildDir}/libs/$archivesBaseName-${archiveVersion.get()}-dev.jar")
-			archiveFileName = "${archivesBaseName}-${archiveVersion.get()}.jar"
-		}
-
-		artifacts {
-			dev file: file("${project.buildDir}/libs/$archivesBaseName-${version}-dev.jar"), type: "jar", builtBy: jar
-		}
-
-		processResources {
-			inputs.property "version", project.version
-
-			filesMatching("fabric.mod.json") {
-				expand "version": project.version
-			}
-		}
-	}
-
-	if (project.rootProject != project) {
-		project.rootProject.dependencies {
-			api project(path: ":${project.name}", configuration: "dev")
-			include project(":${project.name}")
-		}
-	}
-
-	task sourcesJar(type: Jar, dependsOn: classes) {
-		classifier = 'sources'
-		from sourceSets.main.allSource
-	}
-
-	tasks.withType(AbstractArchiveTask) {
-		preserveFileTimestamps = false
-		reproducibleFileOrder = true
+	maven {
+		name = "Jitpack"
+		url = "https://jitpack.io/"
 	}
 }
+
+java {
+	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+	// if it is present.
+	// If you remove this line, sources will not be generated.
+	withSourcesJar()
+}
+
+jar {
+	from("LICENSE") {
+		rename { "${it}_${project.archivesBaseName}"}
+	}
+}
+
+if (project.rootProject != project) {
+	project.rootProject.dependencies {
+		api project(path: ":${project.name}", configuration: "dev")
+		include project(":${project.name}")
+	}
+}
+
 
 subprojects {}
-
-task remapMavenJar(type: RemapJarTask, dependsOn: jar) {
-	afterEvaluate {
-		input = file("${project.buildDir}/libs/${archivesBaseName}-${archiveVersion.get()}-dev.jar")
-		archiveFileName = "${archivesBaseName}-${archiveVersion.get()}-maven.jar"
-		addNestedDependencies.set(false)
-	}
-}
 
 subprojects.each { remapJar.dependsOn("${it.path}:remapJar") }
