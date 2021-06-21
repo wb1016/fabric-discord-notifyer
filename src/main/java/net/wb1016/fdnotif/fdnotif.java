@@ -1,9 +1,11 @@
 package net.wb1016.fdnotif;
 
 import net.wb1016.fdnotif.listeners.MinecraftEventListener;
-import kong.unirest.Unirest;
+import net.wb1016.fdnotif.Configuration;
+
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.serializer.JanksonConfigSerializer;
+import kong.unirest.Unirest;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -18,17 +20,17 @@ import javax.security.auth.login.LoginException;
 import java.util.Collections;
 
 public class fdnotif implements DedicatedServerModInitializer {
-
-    public static final String MOD_ID = "disfabric";
+    public static final String MOD_ID = "fdnotif";
     public static Logger logger = LogManager.getLogger(MOD_ID);
-    public static Configuration config;
     public static JDA jda;
     public static TextChannel textChannel;
+    public static Configuration config;
 
     public static boolean stop = false;
-
     @Override
     public void onInitializeServer() {
+        AutoConfig.register(Configuration.class, JanksonConfigSerializer::new);
+        config = AutoConfig.getConfigHolder(Configuration.class).getConfig();
         try {
                 fdnotif.jda = JDABuilder.createDefault(config.botToken).setHttpClient(new OkHttpClient.Builder()
                         .protocols(Collections.singletonList(Protocol.HTTP_1_1))
@@ -46,10 +48,10 @@ public class fdnotif implements DedicatedServerModInitializer {
         if(jda != null) {
             if(!config.botGameStatus.isEmpty())
                 jda.getPresence().setActivity(Activity.playing(config.botGameStatus));
-            ServerLifecycleEvents.SERVER_STARTED.register((server) -> textChannel.sendMessage(fdnotif.config.serverStarted).queue());
+            ServerLifecycleEvents.SERVER_STARTED.register((server) -> textChannel.sendMessage(fdnotif.config.texts.serverStarted).queue());
             ServerLifecycleEvents.SERVER_STOPPING.register((server) -> {
                 stop = true;
-                textChannel.sendMessage(fdnotif.config.serverStopped).queue();
+                textChannel.sendMessage(fdnotif.config.texts.serverStopped).queue();
                 try {
                     Thread.sleep(250);
                 } catch (InterruptedException e) {

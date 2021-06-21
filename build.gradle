@@ -22,7 +22,9 @@ repositories {
         name 'm2-dv8tion'
         url 'https://m2.dv8tion.net/releases'
     }
-    maven { url "https://maven.shedaniel.me/" }
+    repositories {
+        maven { url "https://maven.shedaniel.me/" }
+    }
 }
 
 dependencies {

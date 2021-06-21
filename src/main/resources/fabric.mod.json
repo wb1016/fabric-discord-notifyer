@@ -20,7 +20,7 @@
   "environment": "server",
   "entrypoints": {
     "server": [
-      "net.wb1016.fdnotif"
+      "net.wb1016.fdnotif.fdnotif"
     ]
   },
   "mixins": [
