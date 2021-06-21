@@ -1,114 +1,82 @@
 plugins {
-	id 'java-library'
-	id 'fabric-loom' version '0.8-SNAPSHOT'
-}
-repositories {
-	mavenCentral()
-	maven {
-		name 'm2-dv8tion'
-		url 'https://m2.dv8tion.net/releases'
-	}
+    id 'fabric-loom' version '0.8-SNAPSHOT'
+    id 'maven-publish'
+    id 'project-report'
 }
 
 sourceCompatibility = JavaVersion.VERSION_16
 targetCompatibility = JavaVersion.VERSION_16
 
-group = "net.wb1016"
+archivesBaseName = project.archives_base_name+"-"+project.minecraft_version
 version = project.mod_version
-archivesBaseName = "fdnotif-mc${project.minecraft_version}"
-
-import net.fabricmc.loom.task.RemapJarTask
-import net.fabricmc.loom.task.RemapSourcesJarTask
-
-processResources {
-	inputs.property "version", project.version
-
-	filesMatching("fabric.mod.json") {
-		expand "version": project.version
-	}
-}
-
-tasks.withType(AbstractArchiveTask) {
-	preserveFileTimestamps = true
-	reproducibleFileOrder = false
-}
-tasks.withType(JavaCompile).configureEach {
-	it.options.release = 16
-	options.encoding = "UTF-8"
-}
-
-group = "net.wb1016"
-
-dependencies {
-	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-
-	implementation ("net.dv8tion:JDA:${project.jda_version}") {
-		exclude module: 'opus-java'
-	}
-
-	include ("net.dv8tion:JDA:${project.jda_version}") {
-		exclude module: 'opus-java'
-	}
-	include "net.sf.trove4j:trove4j:${project.trove4j_version}"
-	include "org.slf4j:slf4j-nop:${project.slf4j_version}"
-	include "org.slf4j:slf4j-api:${project.slf4j_version}"
-	include "org.apache.commons:commons-collections4:${project.commons_collections4_version}"
-	include "com.neovisionaries:nv-websocket-client:${project.nv_websocket_client_version}"
-	include "com.squareup.okhttp3:okhttp:${project.okhttp_version}"
-	include "com.squareup.okio:okio:${project.okio_version}"
-	include "com.fasterxml.jackson.core:jackson-databind:${project.jackson_version}"
-	include "com.fasterxml.jackson.core:jackson-annotations:${project.jackson_version}"
-	include "com.fasterxml.jackson.core:jackson-core:${project.jackson_version}"
-	include "org.json:json:${project.json_version}"
-}
-
-minecraft {}
-
-configurations {
-		dev
-}
+group = project.maven_group
 
 repositories {
-	mavenLocal()
-	mavenCentral()
-	maven {
-		name 'm2-dv8tion'
-		url 'https://m2.dv8tion.net/releases'
-	}
-	maven {
-		name = 'Fabric'
-		url = 'https://maven.fabricmc.net/'
-	}
-	maven {
-		name = "Jitpack"
-		url = "https://jitpack.io/"
-	}
+    jcenter {}
+    mavenCentral()
+    maven {
+        name = "Fabric"
+        url = "https://maven.fabricmc.net/"
+    }
+    maven {
+        name 'm2-dv8tion'
+        url 'https://m2.dv8tion.net/releases'
+    }
+    maven { url "https://maven.shedaniel.me/" }
+}
+
+dependencies {
+
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+    include(modImplementation ("net.dv8tion:JDA:4.2.1_253") {
+        exclude module: 'opus-java'
+    })
+    include(modApi("me.sargunvohra.mcmods:autoconfig1u:3.3.1")) {
+        exclude group: "net.fabricmc.fabric-api", module: "fabric-api"
+    }
+    include(modApi("me.shedaniel.cloth:cloth-config-fabric:5.0.34")) {
+        exclude group: "net.fabricmc.fabric-api", module: "fabric-api"
+    }
+    include(modImplementation ("com.konghq:unirest-java:3.11.09:standalone"))
+    include "com.fasterxml.jackson.core:jackson-databind:2.10.1"
+    include "net.sf.trove4j:trove4j:3.0.3"
+    include "org.apache.commons:commons-collections4:4.1"
+    include "com.google.code.findbugs:jsr305:3.0.2"
+    include "org.jetbrains:annotations:16.0.1"
+    include "com.neovisionaries:nv-websocket-client:2.10"
+    include "com.squareup.okhttp3:okhttp:3.13.0"
+    include "com.fasterxml.jackson.core:jackson-annotations:2.10.1"
+    include "com.fasterxml.jackson.core:jackson-core:2.10.1"
+    include "com.squareup.okio:okio:1.17.2"
+    include "com.neovisionaries:nv-websocket-client:2.14"
+
+    implementation 'com.google.code.gson:gson'
+}
+
+processResources {
+    inputs.property "version", project.version
+
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
+    }
+}
+
+tasks.withType(JavaCompile) {
+    it.options.encoding = "UTF-8"
+    it.options.release = 16
 }
 
 java {
-	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-	// if it is present.
-	// If you remove this line, sources will not be generated.
-	withSourcesJar()
+    withSourcesJar()
 }
 
 jar {
-	from("LICENSE") {
-		rename { "${it}_${project.archivesBaseName}"}
-	}
+    from("LICENSE") {
+        rename { "${it}_${project.archivesBaseName}"}
+    }
 }
-
-if (project.rootProject != project) {
-	project.rootProject.dependencies {
-		api project(path: ":${project.name}", configuration: "dev")
-		include project(":${project.name}")
-	}
-}
-
-
-subprojects {}
-
-subprojects.each { remapJar.dependsOn("${it.path}:remapJar") }

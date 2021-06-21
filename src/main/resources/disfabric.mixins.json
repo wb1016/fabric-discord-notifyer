@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "package": "net.wb1016.fdnotif.mixins",
+  "compatibilityLevel": "JAVA_16",
+  "mixins": [
+    "MixinPlayerAdvancementTracker",
+    "MixinPlayerManager",
+    "MixinServerPlayerEntity",
+    "MixinServerPlayNetworkHandler"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

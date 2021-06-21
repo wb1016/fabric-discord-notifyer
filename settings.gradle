@@ -1,16 +1,11 @@
 pluginManagement {
     repositories {
-        gradlePluginPortal()
+        mavenCentral()
         maven {
             name = 'Fabric'
             url = 'https://maven.fabricmc.net/'
         }
-        mavenLocal()
-        maven {
-            name = 'Jitpack'
-            url = 'https://jitpack.io'
-        }
+        jcenter{}
+        gradlePluginPortal()
     }
 }
-
-rootProject.name = "fdnotif"

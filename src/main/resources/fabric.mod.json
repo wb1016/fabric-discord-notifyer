@@ -1,32 +1,35 @@
 {
   "schemaVersion": 1,
   "id": "fdnotif",
-  "name": "fabric discord notifyer",
-  "description": "",
   "version": "${version}",
-  "environment": "server",
+
+  "name": "DisFabric",
+  "description": "fabric discord notif bot",
   "authors": [
-    "wb1016"
+    "wb1016",
+    "BRForgers Team",
+    "armelin1",
+    "D4rkness_King",
+    "jonatsp"
   ],
-  "contributors": [
-	"arthurbambou (aka. Cat Core)",
-    "Thedude7054",
-    "yhr0x43",
-    "BeeFox-sys",
-    "PegasusEpsilon",
-    "v-tron",
-    "MightyKnight",
-    "Ev1dentFir3",
-    "kwvanderlinde",
-    "dkolb",
-    "matthias4217",
-    "Geek202"
-  ],
+  "contact": {
+    "homepage": "https://github.com/wb1016/fdnotif",
+    "sources": "https://github.com/wb1016/fdnotif"
+  },
+
+  "environment": "server",
   "entrypoints": {
     "server": [
-      "net.wb1016.fdnotif.fdnotif"
+      "net.wb1016.fdnotif"
     ]
   },
-  "depends": {},
-  "mixins": []
+  "mixins": [
+    "disfabric.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.11.3",
+    "fabric": "*",
+    "minecraft": "1.17.x",
+    "java": ">=16"
+  }
 }
